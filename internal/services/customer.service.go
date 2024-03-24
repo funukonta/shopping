@@ -22,7 +22,12 @@ func NewCustomerService(repo repositories.CustomerRepo) CustomerService {
 }
 
 func (s *customerService) Create(data *models.CustomerModel) (*models.CustomerModel, error) {
-	return nil, nil
+	newCust, err := s.repo.Create(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return newCust, err
 }
 
 func (s *customerService) GetAll() ([]models.CustomerModel, error) {

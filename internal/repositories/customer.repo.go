@@ -22,7 +22,17 @@ func NewCustomerRepo(db *sqlx.DB) CustomerRepo {
 }
 
 func (r *customerRepo) Create(data *models.CustomerModel) (*models.CustomerModel, error) {
-	return nil, nil
+	query := `INSERT INTO customers (name, email, password, address, phone) 
+	VALUES ($1, $2, $3, $4, $5)
+	RETURNING id ,name, email, password, address, phone, created_at
+	`
+	newCust := new(models.CustomerModel)
+	err := r.db.Get(newCust, query, data.Name, data.Email, data.Password, data.Address, data.Phone)
+	if err != nil {
+		return nil, err
+	}
+
+	return newCust, err
 }
 
 func (r *customerRepo) GetAll() ([]models.CustomerModel, error) {
