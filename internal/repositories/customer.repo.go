@@ -31,10 +31,18 @@ func (r *customerRepo) Create(data *models.CustomerModel) (*models.CustomerModel
 	RETURNING id ,name, email, password, address, phone, created_at
 	`
 	newCust := new(models.CustomerModel)
-	err := r.db.Get(newCust, query, data.Name, data.Email, data.Password, data.Address, data.Phone)
+	tx, err := r.db.BeginTxx(context.Background(), nil)
 	if err != nil {
 		return nil, err
 	}
+	defer tx.Rollback()
+
+	err = tx.Get(newCust, query, data.Name, data.Email, data.Password, data.Address, data.Phone)
+	if err != nil {
+		return nil, err
+	}
+
+	err = tx.Commit()
 
 	return newCust, err
 }
