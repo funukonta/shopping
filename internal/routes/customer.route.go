@@ -15,4 +15,5 @@ func CustomerRoutes(mux *http.ServeMux, db *sqlx.DB) {
 	customerHandler := handlers.NewCustomerHandler(service)
 
 	mux.Handle("POST /customers", Handler(customerHandler.Create))
+	mux.Handle("GET /customers", Handler(customerHandler.GetAll))
 }

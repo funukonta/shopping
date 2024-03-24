@@ -36,7 +36,13 @@ func (r *customerRepo) Create(data *models.CustomerModel) (*models.CustomerModel
 }
 
 func (r *customerRepo) GetAll() ([]models.CustomerModel, error) {
-	return nil, nil
+	query := `select name, email, password, address, phone from customers`
+	customers := []models.CustomerModel{}
+	if err := r.db.Select(&customers, query); err != nil {
+		return nil, err
+	}
+
+	return customers, nil
 }
 
 func (r *customerRepo) GetById(id int) (*models.CustomerModel, error) {

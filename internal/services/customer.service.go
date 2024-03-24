@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/funukonta/shopping/internal/models"
 	"github.com/funukonta/shopping/internal/repositories"
 )
@@ -31,7 +33,15 @@ func (s *customerService) Create(data *models.CustomerModel) (*models.CustomerMo
 }
 
 func (s *customerService) GetAll() ([]models.CustomerModel, error) {
-	return nil, nil
+	customers, err := s.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	if len(customers) == 0 {
+		return nil, fmt.Errorf("tidak ada data")
+	}
+
+	return customers, nil
 }
 
 func (s *customerService) GetById(id int) (*models.CustomerModel, error) {

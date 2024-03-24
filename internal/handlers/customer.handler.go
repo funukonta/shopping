@@ -40,6 +40,12 @@ func (h *customerHandler) Create(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *customerHandler) GetAll(w http.ResponseWriter, r *http.Request) error {
+	customers, err := h.serv.GetAll()
+	if err != nil {
+		return err
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Data: customers, Message: "Berhasil ambil data customers"}).Send(w)
 	return nil
 }
 func (h *customerHandler) GetById(w http.ResponseWriter, r *http.Request) error {
