@@ -1,6 +1,10 @@
 package repositories
 
 import (
+	"context"
+	"fmt"
+	"time"
+
 	"github.com/funukonta/shopping/internal/models"
 	"github.com/jmoiron/sqlx"
 )
@@ -57,7 +61,36 @@ func (r *customerRepo) GetById(id int) (*models.CustomerModel, error) {
 }
 
 func (r *customerRepo) Update(data *models.CustomerModel) error {
-	return nil
+	query := `UPDATE customers 
+	SET 
+		name = $1,
+		email = $2,
+		password = $3,
+		address = $4,
+		phone = $5,
+		updated_at = $6
+	WHERE
+		id = $7;`
+	tx, err := r.db.BeginTxx(context.Background(), nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	aff, err := tx.Exec(query, data.Name, data.Email, data.Password, data.Address, data.Phone, time.Now(), data.ID)
+	if err != nil {
+		return err
+	}
+	rowAff, err := aff.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowAff == 0 {
+		return fmt.Errorf("ada kesalahan pada data, cek kembali")
+	}
+
+	err = tx.Commit()
+	return err
 }
 
 func (r *customerRepo) Delete(id int) error {

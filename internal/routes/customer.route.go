@@ -16,5 +16,7 @@ func CustomerRoutes(mux *http.ServeMux, db *sqlx.DB) {
 
 	mux.Handle("POST /customers", Handler(customerHandler.Create))
 	mux.Handle("GET /customers", Handler(customerHandler.GetAll))
+	mux.Handle("PUT /customers", Handler(customerHandler.Update))
+
 	mux.Handle("GET /customers/{id}", Handler(customerHandler.GetById))
 }

@@ -60,7 +60,8 @@ func (s *customerService) GetById(idStr string) (*models.CustomerModel, error) {
 }
 
 func (s *customerService) Update(data *models.CustomerModel) error {
-	return nil
+	err := s.repo.Update(data)
+	return err
 }
 
 func (s *customerService) Delete(id int) error {

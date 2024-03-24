@@ -60,6 +60,17 @@ func (h *customerHandler) GetById(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 func (h *customerHandler) Update(w http.ResponseWriter, r *http.Request) error {
+	cust := new(models.CustomerModel)
+	if err := pkg.GetJsonBody(r, cust); err != nil {
+		return err
+	}
+
+	err := h.serv.Update(cust)
+	if err != nil {
+		return err
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: fmt.Sprintf("Berhasil update customer : %d", cust.ID)}).Send(w)
 	return nil
 }
 func (h *customerHandler) Delete(w http.ResponseWriter, r *http.Request) error {
