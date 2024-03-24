@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/funukonta/shopping/internal/models"
@@ -62,6 +63,9 @@ func (r *customerRepo) GetById(id int) (*models.CustomerModel, error) {
 	where id=$1`
 	customer := new(models.CustomerModel)
 	if err := r.db.Get(customer, query, id); err != nil {
+		if strings.Contains(err.Error(), "no rows") {
+			return nil, fmt.Errorf("tidak ada data")
+		}
 		return nil, err
 	}
 
