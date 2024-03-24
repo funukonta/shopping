@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/funukonta/shopping/internal/models"
@@ -49,6 +50,13 @@ func (h *customerHandler) GetAll(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 func (h *customerHandler) GetById(w http.ResponseWriter, r *http.Request) error {
+	id := r.PathValue("id")
+	customer, err := h.serv.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Data: customer, Message: fmt.Sprintf("Berhasil ambil customer : %s", id)}).Send(w)
 	return nil
 }
 func (h *customerHandler) Update(w http.ResponseWriter, r *http.Request) error {

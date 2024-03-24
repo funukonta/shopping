@@ -46,7 +46,14 @@ func (r *customerRepo) GetAll() ([]models.CustomerModel, error) {
 }
 
 func (r *customerRepo) GetById(id int) (*models.CustomerModel, error) {
-	return nil, nil
+	query := `select name, email, password, address, phone from customers
+	where id=$1`
+	customer := new(models.CustomerModel)
+	if err := r.db.Get(customer, query, id); err != nil {
+		return nil, err
+	}
+
+	return customer, nil
 }
 
 func (r *customerRepo) Update(data *models.CustomerModel) error {

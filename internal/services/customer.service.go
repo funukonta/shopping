@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/funukonta/shopping/internal/models"
 	"github.com/funukonta/shopping/internal/repositories"
@@ -10,7 +11,7 @@ import (
 type CustomerService interface {
 	Create(data *models.CustomerModel) (*models.CustomerModel, error)
 	GetAll() ([]models.CustomerModel, error)
-	GetById(id int) (*models.CustomerModel, error)
+	GetById(string) (*models.CustomerModel, error)
 	Update(data *models.CustomerModel) error
 	Delete(id int) error
 }
@@ -44,8 +45,18 @@ func (s *customerService) GetAll() ([]models.CustomerModel, error) {
 	return customers, nil
 }
 
-func (s *customerService) GetById(id int) (*models.CustomerModel, error) {
-	return nil, nil
+func (s *customerService) GetById(idStr string) (*models.CustomerModel, error) {
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return nil, err
+	}
+
+	customer, err := s.repo.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return customer, nil
 }
 
 func (s *customerService) Update(data *models.CustomerModel) error {
