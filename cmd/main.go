@@ -6,16 +6,33 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/funukonta/shopping/internal/routes"
+	"github.com/funukonta/shopping/pkg"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
 	mux := http.NewServeMux()
 
+	db, err := pkg.ConnectPostgre()
+	if err != nil {
+		log.Panic(err.Error())
+		return
+	}
+
+	routes.CustomerRoutes(mux, db)
+
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("hello")
 	})
 
 	port := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
+
+	log.Println("API Server listening to port", port)
 	http.ListenAndServe(port, mux)
 }
+
+// migrate create -ext sql -dir migrate crate_table_customer
+
+// docker postges
+// docker run --name shopping -e POSTGRES_PASSWORD=shopping -p 5432:5432 -d postgres && sleep 2 && docker exec -it shopping psql -U postgres -d postgres -c "CREATE DATABASE shoppingdb;"
