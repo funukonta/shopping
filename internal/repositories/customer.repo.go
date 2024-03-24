@@ -102,5 +102,25 @@ func (r *customerRepo) Update(data *models.CustomerModel) error {
 }
 
 func (r *customerRepo) Delete(id int) error {
-	return nil
+	query := `delete from customerS where id=$1`
+	tx, err := r.db.BeginTxx(context.Background(), nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	aff, err := tx.Exec(query, id)
+	if err != nil {
+		return err
+	}
+	rowAff, err := aff.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowAff == 0 {
+		return fmt.Errorf("tidak ada customer yang dihapus, cek kembali")
+	}
+
+	err = tx.Commit()
+	return err
 }

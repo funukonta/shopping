@@ -74,5 +74,12 @@ func (h *customerHandler) Update(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 func (h *customerHandler) Delete(w http.ResponseWriter, r *http.Request) error {
+	id := r.PathValue("id")
+	err := h.serv.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: fmt.Sprintf("Berhasil delete customer : %s", id)}).Send(w)
 	return nil
 }

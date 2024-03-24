@@ -13,7 +13,7 @@ type CustomerService interface {
 	GetAll() ([]models.CustomerModel, error)
 	GetById(string) (*models.CustomerModel, error)
 	Update(data *models.CustomerModel) error
-	Delete(id int) error
+	Delete(string) error
 }
 
 type customerService struct {
@@ -64,6 +64,12 @@ func (s *customerService) Update(data *models.CustomerModel) error {
 	return err
 }
 
-func (s *customerService) Delete(id int) error {
-	return nil
+func (s *customerService) Delete(idStr string) error {
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return err
+	}
+
+	err = s.repo.Delete(id)
+	return err
 }
