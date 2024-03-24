@@ -40,7 +40,7 @@ func (r *customerRepo) Create(data *models.CustomerModel) (*models.CustomerModel
 }
 
 func (r *customerRepo) GetAll() ([]models.CustomerModel, error) {
-	query := `select name, email, password, address, phone from customers`
+	query := `select id,name, email, password, address, phone from customers`
 	customers := []models.CustomerModel{}
 	if err := r.db.Select(&customers, query); err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (r *customerRepo) GetAll() ([]models.CustomerModel, error) {
 }
 
 func (r *customerRepo) GetById(id int) (*models.CustomerModel, error) {
-	query := `select name, email, password, address, phone from customers
+	query := `select id, name, email, password, address, phone from customers
 	where id=$1`
 	customer := new(models.CustomerModel)
 	if err := r.db.Get(customer, query, id); err != nil {
