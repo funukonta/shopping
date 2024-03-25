@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/funukonta/shopping/internal/models"
 	"github.com/funukonta/shopping/internal/services"
 	"github.com/funukonta/shopping/pkg"
 )
@@ -36,6 +37,18 @@ func (h *shopCartHandler) GetAllList(w http.ResponseWriter, r *http.Request) err
 }
 
 func (h *shopCartHandler) AddCart(w http.ResponseWriter, r *http.Request) error {
+	id_cust := r.PathValue("cust")
+	product := models.ShoppingCartDetail{}
+	if err := pkg.GetJsonBody(r, &product); err != nil {
+		return err
+	}
+
+	err := h.serv.AddCart(id_cust, &product)
+	if err != nil {
+		return err
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: "Berhasil insert to cart"}).Send(w)
 	return nil
 }
 func (h *shopCartHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) error {
