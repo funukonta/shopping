@@ -20,7 +20,7 @@ func main() {
 		return
 	}
 
-	routes.CustomerRoutes(mux, db)
+	routes.Routes(mux, db)
 
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("hello")
@@ -32,7 +32,9 @@ func main() {
 	http.ListenAndServe(port, mux)
 }
 
+// go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 // migrate create -ext sql -dir migrate crate_table_customer
+// migrate create -ext sql -dir migrate crate_table_product
 
 // docker postges
 // docker run --name shopping -e POSTGRES_PASSWORD=shopping -p 5432:5432 -d postgres && sleep 2 && docker exec -it shopping psql -U postgres -d postgres -c "CREATE DATABASE shoppingdb;"
