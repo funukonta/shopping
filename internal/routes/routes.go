@@ -9,6 +9,7 @@ import (
 
 func Routes(mux *http.ServeMux, db *sqlx.DB) {
 	CustomerRoutes(mux, db)
+	ProductRoutes(mux, db)
 }
 
 type Handler func(w http.ResponseWriter, r *http.Request) error
