@@ -12,7 +12,7 @@ import (
 type ShopCartRepo interface {
 	GetAllList(id_cust int) (int, []models.ShoppingCartDetail, error)
 	AddCart(int, *models.ShoppingCartDetail) error
-	DeleteProduct(*models.ShoppingCart, []models.ShoppingCartDetail) error
+	DeleteProduct(int, []models.ShoppingCartDetail) error
 	UpdateProduct(*models.ShoppingCart, []models.ShoppingCartDetail) error
 }
 
@@ -98,8 +98,37 @@ func (r *shopCartRepo) AddCart(id_cust int, product *models.ShoppingCartDetail) 
 	return err
 }
 
-func (r *shopCartRepo) DeleteProduct(cart *models.ShoppingCart, cartDtl []models.ShoppingCartDetail) error {
-	return nil
+func (r *shopCartRepo) DeleteProduct(id_cust int, cartDtl []models.ShoppingCartDetail) error {
+	query := `select id_cart from shopping_cart where id_customer=$1`
+	var id_cart int
+	err := r.db.QueryRowx(query, id_cust).Scan(&id_cart)
+	if err != nil {
+		return err
+	}
+
+	tx, err := r.db.BeginTxx(context.Background(), nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	query = `DELETE from shopping_cart_detail where id_cart=$1 and id_product=$2`
+	for _, detail := range cartDtl {
+		aff, err := tx.Exec(query, id_cart, detail.ProductID)
+		if err != nil {
+			return err
+		}
+		affRow, err := aff.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if affRow == 0 {
+			return fmt.Errorf("terjadi kesalahan delete shopping cart, cek apakah product ada dalam cart")
+		}
+	}
+
+	err = tx.Commit()
+	return err
 }
 
 func (r *shopCartRepo) UpdateProduct(cart *models.ShoppingCart, cartDtl []models.ShoppingCartDetail) error {
