@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS shopping_cart (
 INSERT INTO shopping_cart (id_customer) values (1);
 
 CREATE TABLE IF NOT EXISTS shopping_cart_detail (
+    id_cart_detail SERIAL PRIMARY KEY,
     id_cart INT,
     id_product INT,
     qty INT,
@@ -18,4 +19,4 @@ CREATE TABLE IF NOT EXISTS shopping_cart_detail (
 );
 
 -- t-shirt and phone
-INSERT INTO shopping_cart_detail (id_product,qty) values (1,3),(3,1);
+INSERT INTO shopping_cart_detail (id_cart,id_product,qty) values (1,1,3),(1,3,1);
