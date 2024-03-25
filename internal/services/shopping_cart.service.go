@@ -52,6 +52,10 @@ func (s *shopCartService) AddCart(id_cust string, product *models.ShoppingCartDe
 		return err
 	}
 
+	if product.Quantity <= 0 {
+		return fmt.Errorf("quantity tidak boleh kurang dari 0")
+	}
+
 	err = s.repo.AddCart(custId, product)
 	return err
 }
