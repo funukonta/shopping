@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS customers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO customers (name,email,password,address,phone) values ('Evan Roy','evanroy36@gmail.com','funukonta','Sidoarjo','089661108834');
