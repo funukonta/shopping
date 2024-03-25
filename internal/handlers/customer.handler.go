@@ -60,12 +60,13 @@ func (h *customerHandler) GetById(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 func (h *customerHandler) Update(w http.ResponseWriter, r *http.Request) error {
+	id := r.PathValue("id")
 	cust := new(models.CustomerModel)
 	if err := pkg.GetJsonBody(r, cust); err != nil {
 		return err
 	}
 
-	err := h.serv.Update(cust)
+	err := h.serv.Update(id, cust)
 	if err != nil {
 		return err
 	}

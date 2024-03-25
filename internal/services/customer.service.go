@@ -12,7 +12,7 @@ type CustomerService interface {
 	Create(data *models.CustomerModel) (*models.CustomerModel, error)
 	GetAll() ([]models.CustomerModel, error)
 	GetById(string) (*models.CustomerModel, error)
-	Update(data *models.CustomerModel) error
+	Update(idStr string, data *models.CustomerModel) error
 	Delete(string) error
 }
 
@@ -59,8 +59,15 @@ func (s *customerService) GetById(idStr string) (*models.CustomerModel, error) {
 	return customer, nil
 }
 
-func (s *customerService) Update(data *models.CustomerModel) error {
-	err := s.repo.Update(data)
+func (s *customerService) Update(idStr string, data *models.CustomerModel) error {
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return err
+	}
+
+	data.ID = id
+
+	err = s.repo.Update(data)
 	return err
 }
 
