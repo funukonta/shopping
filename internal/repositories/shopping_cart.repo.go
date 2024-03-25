@@ -13,7 +13,7 @@ type ShopCartRepo interface {
 	GetAllList(id_cust int) (int, []models.ShoppingCartDetail, error)
 	AddCart(int, *models.ShoppingCartDetail) error
 	DeleteProduct(int, []models.ShoppingCartDetail) error
-	UpdateProduct(*models.ShoppingCart, []models.ShoppingCartDetail) error
+	UpdateProduct(int, []models.ShoppingCartDetail) error
 }
 
 type shopCartRepo struct {
@@ -131,6 +131,43 @@ func (r *shopCartRepo) DeleteProduct(id_cust int, cartDtl []models.ShoppingCartD
 	return err
 }
 
-func (r *shopCartRepo) UpdateProduct(cart *models.ShoppingCart, cartDtl []models.ShoppingCartDetail) error {
-	return nil
+func (r *shopCartRepo) UpdateProduct(id_cust int, cartDtl []models.ShoppingCartDetail) error {
+	id_cart, err := r.getIdShoppingCart(id_cust)
+	if err != nil {
+		return err
+	}
+
+	tx, err := r.db.BeginTxx(context.Background(), nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	query := `update shopping_cart_detail set qty=$1 where id_cart=$2 and id_product=$3`
+	for _, detail := range cartDtl {
+		aff, err := tx.Exec(query, detail.Quantity, id_cart, detail.ProductID)
+		if err != nil {
+			return err
+		}
+		affRow, err := aff.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if affRow == 0 {
+			return fmt.Errorf("terjadi kesalahan update shopping cart, cek apakah product ada dalam cart")
+		}
+	}
+	err = tx.Commit()
+	return err
+}
+
+func (r *shopCartRepo) getIdShoppingCart(id_cust int) (int, error) {
+	query := `SELECT id_cart from shopping_cart where id_customer=$1`
+	var id_cart int
+	err := r.db.QueryRowx(query, id_cust).Scan(&id_cart)
+	if err != nil {
+		return 0, err
+	}
+
+	return id_cart, nil
 }

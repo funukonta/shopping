@@ -63,9 +63,21 @@ func (h *shopCartHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) 
 		return err
 	}
 
-	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: "Berhasil insert to cart"}).Send(w)
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: "Berhasil delete to cart"}).Send(w)
 	return nil
 }
 func (h *shopCartHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) error {
+	id_cust := r.PathValue("cust")
+	product := []models.ShoppingCartDetail{}
+	if err := pkg.GetJsonBody(r, &product); err != nil {
+		return err
+	}
+
+	err := h.serv.UpdateProduct(id_cust, product)
+	if err != nil {
+		return err
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: "Berhasil update cart"}).Send(w)
 	return nil
 }

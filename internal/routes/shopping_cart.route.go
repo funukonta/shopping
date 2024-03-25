@@ -17,4 +17,5 @@ func ShoopingCartRoutes(mux *http.ServeMux, db *sqlx.DB) {
 	mux.Handle("GET /shopping-carts/{cust}", Handler(shopcartHandler.GetAllList))
 	mux.Handle("POST /shopping-carts/{cust}", Handler(shopcartHandler.AddCart))
 	mux.Handle("DELETE /shopping-carts/{cust}", Handler(shopcartHandler.DeleteProduct))
+	mux.Handle("PUT /shopping-carts/{cust}", Handler(shopcartHandler.UpdateProduct))
 }

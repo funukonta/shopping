@@ -12,7 +12,7 @@ type ShopCartService interface {
 	GetAllList(id_cust string) (*models.ResJoinCart, error)
 	AddCart(string, *models.ShoppingCartDetail) error
 	DeleteProduct(string, []models.ShoppingCartDetail) error
-	UpdateProduct(*models.ShoppingCart, []models.ShoppingCartDetail) error
+	UpdateProduct(string, []models.ShoppingCartDetail) error
 }
 
 type shopCartService struct {
@@ -69,6 +69,12 @@ func (s *shopCartService) DeleteProduct(id_cust string, product []models.Shoppin
 	err = s.repo.DeleteProduct(custId, product)
 	return err
 }
-func (s *shopCartService) UpdateProduct(*models.ShoppingCart, []models.ShoppingCartDetail) error {
-	return nil
+func (s *shopCartService) UpdateProduct(id_cust string, product []models.ShoppingCartDetail) error {
+	custId, err := strconv.Atoi(id_cust)
+	if err != nil {
+		return err
+	}
+
+	err = s.repo.UpdateProduct(custId, product)
+	return err
 }
