@@ -58,7 +58,7 @@ func (r *invoiceRepo) Create(id_cust int, dtl []models.InvoiceDetail) (*models.I
 	return inv, details, err
 }
 func (r *invoiceRepo) GetInvoice(id_cust int) ([]models.ResJoinInvoice, error) {
-	query := `select id_invoice,status,created_at from invoice where id_customer=$1`
+	query := `select id_invoice,status,created_at,updated_at from invoice where id_customer=$1`
 	inv := []models.Invoice{}
 	err := r.db.Select(&inv, query, id_cust)
 	if err != nil {
@@ -83,7 +83,7 @@ func (r *invoiceRepo) GetInvoice(id_cust int) ([]models.ResJoinInvoice, error) {
 	return invoices, err
 }
 func (r *invoiceRepo) GetInvoiceById(id_cust, id_invoice int) (*models.Invoice, []models.InvoiceDetail, error) {
-	query := `select id_invoice,status,created_at from invoice where id_customer=$1 and id_invoice=$2`
+	query := `select id_invoice,status,created_at,updated_at from invoice where id_customer=$1 and id_invoice=$2`
 	inv := &models.Invoice{}
 	err := r.db.Get(inv, query, id_cust, id_invoice)
 	if err != nil {
