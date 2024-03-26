@@ -9,7 +9,7 @@ import (
 
 type InvoiceRepo interface {
 	Create(id_cust int, dtl []models.InvoiceDetail) (*models.Invoice, []models.InvoiceDetail, error)
-	GetInvoice(id_cust int) (*models.Invoice, []models.InvoiceDetail, error)
+	GetInvoice(id_cust int) ([]models.ResJoinInvoice, error)
 	GetInvoiceById(id_cust, id_invoice int) (*models.Invoice, []models.InvoiceDetail, error)
 }
 
@@ -57,9 +57,45 @@ func (r *invoiceRepo) Create(id_cust int, dtl []models.InvoiceDetail) (*models.I
 	err = tx.Commit()
 	return inv, details, err
 }
-func (r *invoiceRepo) GetInvoice(id_cust int) (*models.Invoice, []models.InvoiceDetail, error) {
-	return nil, nil, nil
+func (r *invoiceRepo) GetInvoice(id_cust int) ([]models.ResJoinInvoice, error) {
+	query := `select id_invoice,status,created_at from invoice where id_customer=$1`
+	inv := []models.Invoice{}
+	err := r.db.Select(&inv, query, id_cust)
+	if err != nil {
+		return nil, err
+	}
+
+	invoices := []models.ResJoinInvoice{}
+	for _, data := range inv {
+		query = `select * from invoice_detail where id_invoice=$1`
+		invdtl := []models.InvoiceDetail{}
+		err = r.db.Select(&invdtl, query, data.InvoiceID)
+		if err != nil {
+			return nil, err
+		}
+		invoice := models.ResJoinInvoice{
+			Inv:    data,
+			InvDtl: invdtl,
+		}
+		invoices = append(invoices, invoice)
+	}
+
+	return invoices, err
 }
 func (r *invoiceRepo) GetInvoiceById(id_cust, id_invoice int) (*models.Invoice, []models.InvoiceDetail, error) {
-	return nil, nil, nil
+	query := `select id_invoice,status,created_at from invoice where id_customer=$1 and id_invoice=$2`
+	inv := &models.Invoice{}
+	err := r.db.Get(inv, query, id_cust, id_invoice)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	query = `select * from invoice_detail where id_invoice=$1`
+	invdtl := []models.InvoiceDetail{}
+	err = r.db.Select(&invdtl, query, id_invoice)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return inv, invdtl, err
 }

@@ -15,4 +15,6 @@ func InvoiceRoute(mux *http.ServeMux, db *sqlx.DB) {
 	invHandler := handlers.NewInvoiceHandler(serv)
 
 	mux.Handle("POST /invoices/{cust}", Handler(invHandler.Create))
+	mux.Handle("GET /invoices/{cust}", Handler(invHandler.GetInvoice))
+	mux.Handle("GET /invoices/{cust}/{inv}", Handler(invHandler.GetInvoiceById))
 }

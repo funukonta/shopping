@@ -9,7 +9,7 @@ import (
 
 type InvoiceService interface {
 	Create(id_cust string, product []models.InvoiceDetail) (*models.ResJoinInvoice, error)
-	GetInvoice(id_cust string) (*models.ResJoinInvoice, error)
+	GetInvoice(id_cust string) ([]models.ResJoinInvoice, error)
 	GetInvoiceById(id_cust, id_invoice string) (*models.ResJoinInvoice, error)
 }
 
@@ -40,9 +40,38 @@ func (s *invoiceService) Create(id_cust string, products []models.InvoiceDetail)
 	return resInv, err
 }
 
-func (s *invoiceService) GetInvoice(id_cust string) (*models.ResJoinInvoice, error) {
-	return nil, nil
+func (s *invoiceService) GetInvoice(id_cust string) ([]models.ResJoinInvoice, error) {
+	custId, err := strconv.Atoi(id_cust)
+	if err != nil {
+		return nil, err
+	}
+
+	invoices, err := s.repo.GetInvoice(custId)
+	if err != nil {
+		return nil, err
+	}
+
+	return invoices, err
 }
 func (s *invoiceService) GetInvoiceById(id_cust, id_invoice string) (*models.ResJoinInvoice, error) {
-	return nil, nil
+	custId, err := strconv.Atoi(id_cust)
+	if err != nil {
+		return nil, err
+	}
+	invId, err := strconv.Atoi(id_invoice)
+	if err != nil {
+		return nil, err
+	}
+
+	inv, dtl, err := s.repo.GetInvoiceById(custId, invId)
+	if err != nil {
+		return nil, err
+	}
+
+	resInv := &models.ResJoinInvoice{
+		Inv:    *inv,
+		InvDtl: dtl,
+	}
+
+	return resInv, err
 }
