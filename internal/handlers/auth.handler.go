@@ -1,0 +1,49 @@
+package handlers
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/funukonta/shopping/internal/models"
+	"github.com/funukonta/shopping/internal/services"
+	"github.com/funukonta/shopping/pkg"
+)
+
+type AuthHandler interface {
+	Login(w http.ResponseWriter, r *http.Request) error
+}
+
+type authHandler struct {
+	serv services.AuthService
+}
+
+func NewAuthHandler(serv services.AuthService) AuthHandler {
+	return &authHandler{serv: serv}
+}
+
+func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) error {
+	login := new(models.Login)
+	if err := pkg.GetJsonBody(r, login); err != nil {
+		return err
+	}
+
+	expirationTime := time.Now().Add(5 * time.Minute)
+
+	token, err := h.serv.Login(login, expirationTime)
+	if err != nil {
+		return err
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   token,
+		Expires: expirationTime,
+	})
+
+	tokenMap := map[string]string{
+		"token": token,
+	}
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Data: tokenMap, Message: "Login Sukses"}).Send(w)
+	return nil
+}

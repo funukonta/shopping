@@ -36,6 +36,8 @@ func main() {
 // migrate create -ext sql -dir migrate crate_table_customer
 // migrate create -ext sql -dir migrate crate_table_product
 // migrate create -ext sql -dir migrate crate_table_cart
+// migrate create -ext sql -dir migrate crate_table_invoice
+// migrate create -ext sql -dir migrate crate_table_payment
 
 // docker postges
 // docker run --name shopping -e POSTGRES_PASSWORD=shopping -p 5432:5432 -d postgres && sleep 2 && docker exec -it shopping psql -U postgres -d postgres -c "CREATE DATABASE shoppingdb;"
