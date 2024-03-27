@@ -9,7 +9,7 @@ Shopping App - Shopping API developed with golang std lib.
 
 There are 2 ways to run the app :
 
-# Clone the repo
+### Clone the repo
 ```bash
 $ git clone https://github.com/funukonta/shopping
 $ cd shopping/cmd/
@@ -25,5 +25,5 @@ $ cd shopping/
 $ docker compose up -d
 ```
 
-# Test the endpoints
+## Test the endpoints
 There's postman exported file, you can import to your own postman and test the enpoints.
