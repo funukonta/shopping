@@ -11,6 +11,7 @@ import (
 
 type AuthHandler interface {
 	Login(w http.ResponseWriter, r *http.Request) error
+	Logout(w http.ResponseWriter, r *http.Request) error
 }
 
 type authHandler struct {
@@ -45,5 +46,16 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	pkg.Response(http.StatusOK, &pkg.JsonBod{Data: tokenMap, Message: "Login Sukses"}).Send(w)
+	return nil
+}
+
+func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) error {
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   "",
+		Expires: time.Now(),
+	})
+
+	pkg.Response(http.StatusOK, &pkg.JsonBod{Message: "Logged Out"}).Send(w)
 	return nil
 }
