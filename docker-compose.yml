@@ -12,6 +12,11 @@ services:
       - 5432
     networks:
       - shopping_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
 
   app:
     build:
@@ -19,7 +24,8 @@ services:
       dockerfile: Dockerfile
     container_name: shopping_app
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - shopping_network
     env_file:

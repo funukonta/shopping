@@ -36,12 +36,14 @@ func ConnectPostgre() (*sqlx.DB, error) {
 	if err != nil {
 		log.Panicln("getwd", err)
 	}
+
 	var folderMigrate string
 	if strings.Contains(dir, "cmd") {
 		folderMigrate = "../migrate"
 	} else {
 		folderMigrate = "./migrate"
 	}
+
 	m, err := migrate.New(fmt.Sprintf("file://%s", folderMigrate), connStr)
 	if err != nil {
 		log.Panicln("error migrate", err.Error())
@@ -75,7 +77,6 @@ func ConnectAndCreateDB() error {
 		}
 		return err
 	}
-	log.Println("db created")
 
 	return nil
 }

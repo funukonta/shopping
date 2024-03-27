@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/funukonta/shopping/internal/routes"
 	"github.com/funukonta/shopping/pkg"
@@ -14,7 +13,7 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	time.Sleep(time.Second * 5)
+
 	err := pkg.ConnectAndCreateDB()
 	if err != nil {
 		log.Println("ERRRRRROOOOOORRR", err)
