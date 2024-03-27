@@ -14,7 +14,7 @@ func InvoiceRoute(mux *http.ServeMux, db *sqlx.DB) {
 	serv := services.NewInvoiceService(repo)
 	invHandler := handlers.NewInvoiceHandler(serv)
 
-	mux.Handle("POST /invoices/{cust}", Handler(invHandler.Create))
-	mux.Handle("GET /invoices/{cust}", Handler(invHandler.GetInvoice))
-	mux.Handle("GET /invoices/{cust}/{inv}", Handler(invHandler.GetInvoiceById))
+	mux.Handle("POST /invoices/{cust}", authMiddleware(Handler(invHandler.Create)))
+	mux.Handle("GET /invoices/{cust}", authMiddleware(Handler(invHandler.GetInvoice)))
+	mux.Handle("GET /invoices/{cust}/{inv}", authMiddleware(Handler(invHandler.GetInvoiceById)))
 }

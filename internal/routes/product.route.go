@@ -14,8 +14,8 @@ func ProductRoutes(mux *http.ServeMux, db *sqlx.DB) {
 	serv := services.NewProductService(repo)
 	prodHandler := handlers.NewProductHandler(serv)
 
-	mux.Handle("POST /products", Handler(prodHandler.Create))
-	mux.Handle("GET /products", Handler(prodHandler.GetAll))
-	mux.Handle("GET /products/{category}", Handler(prodHandler.GetByCategory))
+	mux.Handle("POST /products", authMiddleware(Handler(prodHandler.Create)))
+	mux.Handle("GET /products", authMiddleware(Handler(prodHandler.GetAll)))
+	mux.Handle("GET /products/{category}", authMiddleware(Handler(prodHandler.GetByCategory)))
 
 }

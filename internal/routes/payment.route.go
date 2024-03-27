@@ -14,5 +14,5 @@ func PaymentRoutes(mux *http.ServeMux, db *sqlx.DB) {
 	serv := services.NewPaymentService(repo)
 	paymentHandler := handlers.NewPaymentHandler(serv)
 
-	mux.Handle("POST /payment/{inv}", Handler(paymentHandler.DoPayment))
+	mux.Handle("POST /payment/{inv}", authMiddleware(Handler(paymentHandler.DoPayment)))
 }
