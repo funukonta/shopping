@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: shopping_postgres
+    environment:
+      - POSTGRES_PASSWORD=shopping
+    ports:
+      - '5432:5432'
+    expose:
+      - 5432
+    networks:
+      - shopping_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopping_app
+    depends_on:
+      - postgres
+    networks:
+      - shopping_network
+    env_file:
+      - cmd/.env
+
+networks:
+  shopping_network:
+    driver: bridge

@@ -3,7 +3,7 @@ module github.com/funukonta/shopping
 go 1.22.1
 
 require (
-	github.com/golang-migrate/migrate v3.5.4+incompatible
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1

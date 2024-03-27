@@ -53,3 +53,29 @@ func ConnectPostgre() (*sqlx.DB, error) {
 
 	return db, nil
 }
+
+func ConnectAndCreateDB() error {
+	host := os.Getenv("DB_HOST")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASS")
+	dbname := "postgres"
+	ssl := os.Getenv("DB_SSL")
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", user, password, host, dbname, ssl)
+
+	db, err := sqlx.Connect("postgres", connStr)
+	if err != nil {
+		log.Panicln("error connStr", err.Error())
+	}
+
+	_, err = db.Exec("CREATE DATABASE shoppingdb")
+	if err != nil {
+		if strings.Contains(err.Error(), "exists") {
+			return nil
+		}
+		return err
+	}
+	log.Println("db created")
+
+	return nil
+}
