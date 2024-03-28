@@ -11,8 +11,5 @@ RUN go mod download
 #build
 RUN go build -v -o /shopping/shoppingApp ./cmd/main.go
 
-# Expose port 8080
-EXPOSE 8080
-
 #run app
 ENTRYPOINT [ "/shopping/shoppingApp" ]
